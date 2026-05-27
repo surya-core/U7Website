@@ -60,7 +60,7 @@ function calculateStreak(attendances: any[]) {
 export default async function MemberProfilePage({
   params,
 }: {
-  params: Promise<{ id: string }> | { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const resolvedParams = await params;
   const { id } = resolvedParams;
