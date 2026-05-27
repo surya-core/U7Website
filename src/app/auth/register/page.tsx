@@ -1,4 +1,4 @@
-import { registerUser } from "@/lib/actions/auth.actions";
+import { registerUser } from "@/lib/actions/auth.action";
 import Link from "next/link";
 
 export default function RegisterPage() {
@@ -31,7 +31,7 @@ export default function RegisterPage() {
             <label className="block text-sm font-bold text-red-500 mb-1">Secret Gym Code</label>
             <input name="secretCode" type="password" required placeholder="Ask staff for code" className="w-full bg-neutral-950 border border-red-900/50 text-white rounded-lg px-4 py-2 focus:outline-none focus:border-red-500 transition-colors" />
           </div>
-          
+
           <button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 mt-4 rounded-lg transition-colors">
             Create Account
           </button>
