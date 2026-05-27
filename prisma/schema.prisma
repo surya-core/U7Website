@@ -1,0 +1,106 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+model User {
+  id                String           @id @default(uuid())
+  name              String
+  email             String           @unique
+  mobileNumber      String
+  password          String
+  role              Role             @default(USER)
+  age               Int
+  gender            String
+  joiningDate       DateTime         @default(now())
+  height            Float            // height in cm
+  weight            Float            // weight in kg
+  emergencyContact  String
+  medicalConditions String?          // any medical conditions or injuries
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  
+  attendances       Attendance[]
+  payments          Payment[]
+  personalRecords   PersonalRecord[]
+  weightLogs        WeightLog[]
+  notifications     Notification[]
+}
+
+model Attendance {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      DateTime  @default(now())
+  entryTime DateTime  @default(now())
+  exitTime  DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([date])
+}
+
+model Payment {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount          Float
+  durationMonths  Int
+  paymentDate     DateTime @default(now())
+  nextDueDate     DateTime
+  heightAtPayment Float?
+  weightAtPayment Float?
+  createdAt       DateTime @default(now())
+
+  @@index([userId])
+}
+
+model PersonalRecord {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercise  String   // e.g. "SQUAT", "BENCH_PRESS", "DEADLIFT", "SHOULDER_PRESS", "PULLUPS"
+  weight    Float    // in kg
+  reps      Int
+  date      DateTime @default(now())
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model WeightLog {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weight    Float    // in kg
+  height    Float    // in cm
+  bmi       Float
+  date      DateTime @default(now())
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      String   // "FEE_DUE", "MEMBERSHIP_EXPIRY", "GENERAL"
+  read      Boolean  @default(false)
+  sentAt    DateTime @default(now())
+
+  @@index([userId])
+}
